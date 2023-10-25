@@ -1,18 +1,43 @@
-//
-//  LottieVIew.swift
-//  Animation
-//
-//  Created by Utkirbek Mekhmonboev on 10/25/23.
-//
-
 import SwiftUI
+import Lottie
 
-struct LottieVIew: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+struct LottieView: UIViewRepresentable {
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
     }
-}
+    
+    var name: String!
+    @Binding var play:Int
+    
+    var animationView = LottieAnimationView()
 
-#Preview {
-    LottieVIew()
+    class Coordinator: NSObject {
+        var parent: LottieView
+    
+        init(_ animationView: LottieView) {
+            self.parent = animationView
+            super.init()
+        }
+    }
+
+    func makeUIView(context: UIViewRepresentableContext<LottieView>) -> UIView {
+        let view = UIView()
+
+        animationView.animation = LottieAnimation.named(name)
+        animationView.contentMode = .scaleAspectFit
+
+        animationView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(animationView)
+
+        NSLayoutConstraint.activate([
+            animationView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            animationView.heightAnchor.constraint(equalTo: view.heightAnchor)
+        ])
+
+        return view
+    }
+
+    func updateUIView(_ uiView: UIView, context: UIViewRepresentableContext<LottieView>) {
+        animationView.play()
+    }
 }
